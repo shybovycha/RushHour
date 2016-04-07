@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
+import java.util.Properties;
 
 import static org.apache.commons.lang.StringUtils.isEmpty;
 import static pl.edu.uj.ii.webapp.execute.SupportedLang.JAVA_8;
@@ -28,6 +29,7 @@ public class StartApp {
     public static final String PARAM_SUPPORTED_LANG = "supportedLang";
     public static final String PARAM_FILE_CONTENT = "fileContent";
     private static final Logger LOGGER = Logger.getLogger(StartApp.class);
+    public static Properties appProperties;
     private RushHourExecutor rushHourExecutor;
 
     public static void main(String[] args) throws IOException {
@@ -36,8 +38,20 @@ public class StartApp {
     }
 
     private void init() {
+        appProperties = loadAppProperties();
         initRoutes();
         initExecutor();
+    }
+
+    private Properties loadAppProperties() {
+        Properties appProperties = new Properties();
+        try {
+            appProperties.load(getClass().getClassLoader().getResourceAsStream("app.properties"));
+        } catch (IOException e) {
+            LOGGER.warn("Cannot load app properties.", e);
+        }
+
+        return appProperties;
     }
 
     private void initExecutor() {
