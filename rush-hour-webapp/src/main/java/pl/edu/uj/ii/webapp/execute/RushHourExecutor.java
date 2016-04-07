@@ -5,7 +5,11 @@ import org.apache.log4j.Logger;
 import pl.edu.uj.ii.webapp.execute.test.TestCase;
 import pl.edu.uj.ii.webapp.execute.test.TestResult;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +18,6 @@ import java.util.stream.Collectors;
  */
 public class RushHourExecutor {
     private static final Logger LOGGER = Logger.getLogger(RushHourExecutor.class);
-    private final List<TestCase> testCases = Lists.newLinkedList();
     private final TaskFactory taskFactory;
 
     public RushHourExecutor(TaskFactory taskFactory) {
@@ -25,10 +28,14 @@ public class RushHourExecutor {
         List<TestResult> result = Lists.newLinkedList();
         try {
             Task task = taskFactory.resolveTask(param);
-            testCases.stream()
+            Files.list(Paths.get(getClass().getClassLoader().getResource("testCases").toURI())).filter(f -> f.endsWith(".in"))
+                    .map(path -> {
+                        File file = path.toFile();
+                        return new TestCase(file.getName(), file);
+                    })
                     .map(testCase -> new TestResult(testCase.getId(), task.resolveTestCases(testCase)))
                     .collect(Collectors.toCollection(() -> result));
-        } catch (IOException e) {
+        } catch (URISyntaxException | IOException e) {
             LOGGER.warn("Cannot execute code source " + param);
         } catch (ClassNotFoundException e) {
             LOGGER.warn("Cannot execute code " + param, e);

@@ -41,7 +41,7 @@ public class JavaTask implements Task, Compilable {
         LOGGER.info(outputStream.toString());
 
 //        ProcessBuilder processBuilder = new ProcessBuilder("/opt/jdk1.8.0_25/bin/java", filePackage + "." + className);
-//        File testCases = new File(getClass().getClassLoader().getResource("testCases.in").getFile());
+//        File testCases = new File(getClass().getClassLoader().getResource("easy.in").getFile());
 //        processBuilder.redirectInput(testCases);
 //        processBuilder.redirectErrorStream(true);
 //        processBuilder.directory(testCases.getParentFile());

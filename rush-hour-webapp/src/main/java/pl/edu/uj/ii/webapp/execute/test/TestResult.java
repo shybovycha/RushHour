@@ -8,15 +8,15 @@ import java.util.List;
  * Created by gauee on 4/7/16.
  */
 public class TestResult {
-    private final byte testCaseId;
+    private final String testCaseId;
     private final List<CarMove> moves;
 
-    public TestResult(byte testCaseId, List<CarMove> moves) {
+    public TestResult(String testCaseId, List<CarMove> moves) {
         this.testCaseId = testCaseId;
         this.moves = moves;
     }
 
-    public byte getTestCaseId() {
+    public String getTestCaseId() {
         return testCaseId;
     }
 

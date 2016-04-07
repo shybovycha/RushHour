@@ -1,16 +1,24 @@
 package pl.edu.uj.ii.webapp.execute.test;
 
+import java.io.File;
+
 /**
  * Created by gauee on 4/7/16.
  */
 public class TestCase {
-    private final byte id;
+    private final String id;
+    private final File file;
 
-    public TestCase(byte id) {
+    public TestCase(String id, File file) {
         this.id = id;
+        this.file = file;
     }
 
-    public byte getId() {
+    public String getId() {
         return id;
+    }
+
+    public File getFile() {
+        return file;
     }
 }
