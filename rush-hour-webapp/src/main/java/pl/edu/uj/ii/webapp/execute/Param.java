@@ -19,4 +19,12 @@ public class Param {
     public String getSourceCode() {
         return sourceCode;
     }
+
+    @Override
+    public String toString() {
+        return "Param{" +
+                "supportedLang=" + supportedLang +
+                ", sourceCode='" + sourceCode + '\'' +
+                '}';
+    }
 }

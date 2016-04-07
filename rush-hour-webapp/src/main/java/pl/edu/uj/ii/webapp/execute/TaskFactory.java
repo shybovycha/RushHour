@@ -2,6 +2,7 @@ package pl.edu.uj.ii.webapp.execute;
 
 import com.google.common.collect.Maps;
 
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -9,9 +10,9 @@ import java.util.Map;
  */
 public class TaskFactory {
 
-    private final Map<SupportedLang, Task> supportedTask = Maps.newHashMap();
+    private final Map<SupportedLang, Compilable> supportedTask = Maps.newHashMap();
 
-    public Task resolveTask(Param param) {
-        return supportedTask.get(param.getSupportedLang());
+    public Task resolveTask(Param param) throws IOException, ClassNotFoundException {
+        return supportedTask.get(param.getSupportedLang()).compile(param.getSourceCode());
     }
 }
