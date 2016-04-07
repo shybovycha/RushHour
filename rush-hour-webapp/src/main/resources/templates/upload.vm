@@ -1,0 +1,61 @@
+<hmtl>
+    <head></head>
+
+    <body>
+    <h1>Welcome on RushHour!</h1>
+
+    <form class="form-horizontal">
+        <fieldset>
+
+            <!-- Form Name -->
+            <legend>Upload source code content</legend>
+
+            <!-- Multiple Radios -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="supportedLang">Select Language</label>
+
+                <div class="col-md-4">
+                    <div class="radio">
+                        <label for="supportedLang-0">
+                            <input type="radio" name="supportedLang" id="supportedLang-0" value="1" checked="checked">
+                            Java 8
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label for="supportedLang-1">
+                            <input type="radio" name="supportedLang" id="supportedLang-1" value="2">
+                            Java 7
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label for="supportedLang-2">
+                            <input type="radio" name="supportedLang" id="supportedLang-2" value="3">
+                            Python
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Button -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="filebutton">Upload file</label>
+
+                <div class="col-md-4">
+                    <input id="filebutton" name="filebutton" class="input-file" type="file">
+                </div>
+            </div>
+
+            <!-- Button -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="singlebutton">Submit solution</label>
+
+                <div class="col-md-4">
+                    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Button</button>
+                </div>
+            </div>
+
+        </fieldset>
+    </form>
+
+    </body>
+</hmtl>
