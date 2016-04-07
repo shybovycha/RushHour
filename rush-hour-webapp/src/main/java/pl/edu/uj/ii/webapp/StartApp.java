@@ -2,6 +2,7 @@ package pl.edu.uj.ii.webapp;
 
 import com.google.common.collect.Maps;
 import org.apache.log4j.Logger;
+import pl.edu.uj.ii.webapp.execute.SupportedLang;
 import spark.ModelAndView;
 import spark.Request;
 import spark.template.velocity.VelocityTemplateEngine;

@@ -1,4 +1,4 @@
-#* @vtlvariable name="supportedLang" type="pl.edu.uj.ii.webapp.SupportedLang[]" *#
+#* @vtlvariable name="supportedLang" type="pl.edu.uj.ii.webapp.execute.SupportedLang[]" *#
 <hmtl>
     <head></head>
 
