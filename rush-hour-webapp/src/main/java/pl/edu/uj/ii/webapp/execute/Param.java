@@ -5,26 +5,26 @@ package pl.edu.uj.ii.webapp.execute;
  */
 public class Param {
     private final SupportedLang supportedLang;
-    private final String sourceCode;
+    private final UploadFile uploadFile;
 
-    public Param(SupportedLang supportedLang, String sourceCode) {
+    public Param(SupportedLang supportedLang, UploadFile uploadFile) {
         this.supportedLang = supportedLang;
-        this.sourceCode = sourceCode;
+        this.uploadFile = uploadFile;
     }
 
     public SupportedLang getSupportedLang() {
         return supportedLang;
     }
 
-    public String getSourceCode() {
-        return sourceCode;
+    public UploadFile getUploadFile() {
+        return uploadFile;
     }
 
     @Override
     public String toString() {
         return "Param{" +
                 "supportedLang=" + supportedLang +
-                ", sourceCode='" + sourceCode + '\'' +
+                ", uploadFile=" + uploadFile +
                 '}';
     }
 }

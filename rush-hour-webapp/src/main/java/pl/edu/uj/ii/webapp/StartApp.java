@@ -1,8 +1,9 @@
 package pl.edu.uj.ii.webapp;
 
 import com.google.common.collect.Maps;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import pl.edu.uj.ii.webapp.execute.SupportedLang;
+import pl.edu.uj.ii.webapp.execute.*;
 import spark.ModelAndView;
 import spark.Request;
 import spark.template.velocity.VelocityTemplateEngine;
@@ -27,41 +28,78 @@ public class StartApp {
     public static final String PARAM_SUPPORTED_LANG = "supportedLang";
     public static final String PARAM_FILE_CONTENT = "fileContent";
     private static final Logger LOGGER = Logger.getLogger(StartApp.class);
+    private RushHourExecutor rushHourExecutor;
 
     public static void main(String[] args) throws IOException {
-        get("/", (req, res) -> uploadPageView(), new VelocityTemplateEngine());
-        post("/submit", "multipart/form-data", (req, res) -> processNewSolution(req), new VelocityTemplateEngine());
+        StartApp startApp = new StartApp();
+        startApp.init();
     }
 
-    private static ModelAndView processNewSolution(Request req) {
-        SupportedLang supportedLang = retrieveSupportedLang(req);
-        String sourceCode = retrieveSourceCode(req);
-        LOGGER.debug("Request params: " + supportedLang + ", SourceCode=" + sourceCode);
+    private void init() {
+        initRoutes();
+        initExecutor();
+    }
 
-        ModelAndView modelAndView = uploadPageView();
+    private void initExecutor() {
+        TaskFactory taskFactory = new TaskFactory(initLanguageCompilers());
+        rushHourExecutor = new RushHourExecutor(taskFactory);
+    }
+
+
+    private void initRoutes() {
+        VelocityTemplateEngine templateEngine = new VelocityTemplateEngine();
+        get("/", (req, res) -> uploadPageView(), templateEngine);
+        post("/submit", "multipart/form-data", (req, res) -> processNewSolution(req), templateEngine);
+    }
+
+    private Map<SupportedLang, Compilable> initLanguageCompilers() {
+        Map<SupportedLang, Compilable> languageCompilers = Maps.newHashMap();
+        languageCompilers.put(SupportedLang.JAVA_7, new JavaTask());
+        languageCompilers.put(SupportedLang.JAVA_8, new JavaTask());
+        languageCompilers.put(SupportedLang.PYTHON, new PythonTask());
+        return languageCompilers;
+    }
+
+    private ModelAndView processNewSolution(Request req) {
+        Param param = createParam(req);
+        LOGGER.debug("Request param: " + param);
+        rushHourExecutor.resolveAllTestCases(param);
+        return tweakSubmit(uploadPageView());
+    }
+
+    private Param createParam(Request req) {
+        SupportedLang supportedLang = retrieveSupportedLang(req);
+        UploadFile uploadFile = retrieveSourceCode(req);
+        return new Param(supportedLang, uploadFile);
+    }
+
+    private ModelAndView tweakSubmit(ModelAndView modelAndView) {
         ((Map<String, Object>) modelAndView.getModel()).put("message", "File uploaded.");
         return modelAndView;
     }
 
-    private static String retrieveSourceCode(Request req) {
-        MultipartConfigElement multipartConfigElement = new MultipartConfigElement("/tmp");
+
+    private UploadFile retrieveSourceCode(Request req) {
+        MultipartConfigElement multipartConfigElement = new MultipartConfigElement("./target");
         req.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
         StringBuilder sourceCodeBuilder = new StringBuilder();
+        String fileName = StringUtils.EMPTY;
         try {
             Part part = req.raw().getPart(PARAM_FILE_CONTENT);
+            fileName = part.getSubmittedFileName();
             try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(part.getInputStream()))) {
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
-                    sourceCodeBuilder.append(line);
+                    sourceCodeBuilder.append(line).append('\n');
                 }
             }
         } catch (ServletException | IOException e) {
             LOGGER.info("Cannot load file.", e);
         }
-        return sourceCodeBuilder.toString();
+        return new UploadFile(fileName, sourceCodeBuilder.toString());
     }
 
-    private static SupportedLang retrieveSupportedLang(Request req) {
+    private SupportedLang retrieveSupportedLang(Request req) {
         String langIdx = req.queryParams(PARAM_SUPPORTED_LANG);
         if (isEmpty(langIdx)) {
             return JAVA_8;
@@ -71,10 +109,11 @@ public class StartApp {
         return idx >= 0 && idx < values.length ? values[idx] : JAVA_8;
     }
 
-    private static ModelAndView uploadPageView() {
+    private ModelAndView uploadPageView() {
         Map<String, Object> model = Maps.newHashMap();
         model.put("supportedLang", SupportedLang.values());
         return new ModelAndView(model, "templates/upload.vm");
     }
+
 
 }

@@ -7,5 +7,5 @@ import java.io.IOException;
  */
 public interface Compilable {
 
-    Task compile(String sourceCode) throws IOException, ClassNotFoundException;
+    Task compile(UploadFile uploadFile) throws IOException, ClassNotFoundException;
 }
