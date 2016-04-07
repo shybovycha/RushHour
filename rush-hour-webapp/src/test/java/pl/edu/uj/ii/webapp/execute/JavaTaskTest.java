@@ -4,6 +4,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+import static pl.edu.uj.ii.webapp.AppConfig.CONFIG;
+
 /**
  * Created by gauee on 4/7/16.
  */
@@ -13,7 +15,7 @@ public class JavaTaskTest {
 
     @Test
     public void compilesProvidedSourceCode() throws IOException, ClassNotFoundException {
-        new JavaTask().compile(new UploadFile("Reader.java", javaClassSourceCode));
+        new JavaTask(CONFIG.getCompiledFileDirForJava8()).compile(new UploadFile("Reader.java", javaClassSourceCode));
     }
 
 

@@ -12,6 +12,7 @@
         #end
 
     <form action="/submit" method="post" enctype="multipart/form-data">
+    ##    <form action="/submit" method="post">
         <fieldset>
             <legend>Upload source code content</legend>
 

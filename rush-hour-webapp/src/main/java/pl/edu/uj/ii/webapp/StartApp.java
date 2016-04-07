@@ -15,9 +15,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
-import java.util.Properties;
 
 import static org.apache.commons.lang.StringUtils.isEmpty;
+import static pl.edu.uj.ii.webapp.AppConfig.CONFIG;
 import static pl.edu.uj.ii.webapp.execute.SupportedLang.JAVA_8;
 import static spark.Spark.get;
 import static spark.Spark.post;
@@ -29,7 +29,6 @@ public class StartApp {
     public static final String PARAM_SUPPORTED_LANG = "supportedLang";
     public static final String PARAM_FILE_CONTENT = "fileContent";
     private static final Logger LOGGER = Logger.getLogger(StartApp.class);
-    public static Properties appProperties;
     private RushHourExecutor rushHourExecutor;
 
     public static void main(String[] args) throws IOException {
@@ -37,28 +36,10 @@ public class StartApp {
         startApp.init();
     }
 
-    private void init() {
-        appProperties = loadAppProperties();
+    private void init() throws IOException {
         initRoutes();
-        initExecutor();
+        rushHourExecutor = new RushHourExecutor(new TaskFactory(initLanguageCompilers()));
     }
-
-    private Properties loadAppProperties() {
-        Properties appProperties = new Properties();
-        try {
-            appProperties.load(getClass().getClassLoader().getResourceAsStream("app.properties"));
-        } catch (IOException e) {
-            LOGGER.warn("Cannot load app properties.", e);
-        }
-
-        return appProperties;
-    }
-
-    private void initExecutor() {
-        TaskFactory taskFactory = new TaskFactory(initLanguageCompilers());
-        rushHourExecutor = new RushHourExecutor(taskFactory);
-    }
-
 
     private void initRoutes() {
         VelocityTemplateEngine templateEngine = new VelocityTemplateEngine();
@@ -68,9 +49,10 @@ public class StartApp {
 
     private Map<SupportedLang, Compilable> initLanguageCompilers() {
         Map<SupportedLang, Compilable> languageCompilers = Maps.newHashMap();
-        languageCompilers.put(SupportedLang.JAVA_7, new JavaTask());
-        languageCompilers.put(SupportedLang.JAVA_8, new JavaTask());
-        languageCompilers.put(SupportedLang.PYTHON, new PythonTask());
+        languageCompilers.put(SupportedLang.JAVA_7, new JavaTask(CONFIG.getCompiledFileDirForJava7()));
+        languageCompilers.put(SupportedLang.JAVA_8, new JavaTask(CONFIG.getCompiledFileDirForJava8()));
+        languageCompilers.put(SupportedLang.PYTHON_2, new PythonTask());
+        languageCompilers.put(SupportedLang.PYTHON_3, new PythonTask());
         return languageCompilers;
     }
 
@@ -82,9 +64,8 @@ public class StartApp {
     }
 
     private Param createParam(Request req) {
-        SupportedLang supportedLang = retrieveSupportedLang(req);
-        UploadFile uploadFile = retrieveSourceCode(req);
-        return new Param(supportedLang, uploadFile);
+        req.raw().setAttribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("./target"));
+        return new Param(retrieveSupportedLang(req), retrieveSourceCode(req));
     }
 
     private ModelAndView tweakSubmit(ModelAndView modelAndView) {
@@ -92,10 +73,7 @@ public class StartApp {
         return modelAndView;
     }
 
-
     private UploadFile retrieveSourceCode(Request req) {
-        MultipartConfigElement multipartConfigElement = new MultipartConfigElement("./target");
-        req.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
         StringBuilder sourceCodeBuilder = new StringBuilder();
         String fileName = StringUtils.EMPTY;
         try {
