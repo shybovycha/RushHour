@@ -5,7 +5,13 @@
     <body>
     <h1>Welcome on RushHour!</h1>
 
-    <form action="/submit" method="post">
+        #if($!message)
+        <p>
+            $message
+        </p>
+        #end
+
+    <form action="/submit" method="post" enctype="multipart/form-data">
         <fieldset>
             <legend>Upload source code content</legend>
 
@@ -21,7 +27,7 @@
                 <label for="filebutton">Upload file</label>
 
                 <div>
-                    <input id="filebutton" name="filebutton" class="input-file" type="file">
+                    <input id="fileContent" name="fileContent" class="input-file" type="file">
                 </div>
             </div>
             <div class="form-group">
