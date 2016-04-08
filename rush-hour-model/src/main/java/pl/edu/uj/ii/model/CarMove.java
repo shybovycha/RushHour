@@ -14,18 +14,6 @@ public class CarMove {
         this.steps = steps;
     }
 
-    public CarId getCarId() {
-        return carId;
-    }
-
-    public Direction getDirection() {
-        return direction;
-    }
-
-    public byte getSteps() {
-        return steps;
-    }
-
     @Override
     public String toString() {
         return carId + " " + direction + " " + steps;
