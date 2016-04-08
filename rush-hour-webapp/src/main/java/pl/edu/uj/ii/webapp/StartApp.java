@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import pl.edu.uj.ii.webapp.execute.*;
+import pl.edu.uj.ii.webapp.execute.test.TestResult;
 import spark.ModelAndView;
 import spark.Request;
 import spark.template.velocity.VelocityTemplateEngine;
@@ -14,6 +15,7 @@ import javax.servlet.http.Part;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Map;
 
 import static org.apache.commons.lang.StringUtils.isEmpty;
@@ -58,23 +60,21 @@ public class StartApp {
 
     private ModelAndView processNewSolution(Request req) {
         Param param = createParam(req);
+        ModelAndView modelAndView = uploadPageView();
         LOGGER.debug("Request param: " + param);
         try {
-            rushHourExecutor.resolveAllTestCases(param);
+            List<TestResult> testResults = rushHourExecutor.resolveAllTestCases(param);
+            appendToModel(modelAndView, "testResults", testResults);
         } catch (Exception e) {
-            return setMessage(uploadPageView(), "Cannot execute all testCases:\n" + e.getMessage());
+            LOGGER.error("Cannot retrieve output", e);
+            return setMessage(modelAndView, "Cannot execute all testCases:\n" + e.getMessage());
         }
-        return setMessage(uploadPageView(), "File uploaded.");
+        return setMessage(modelAndView, "File uploaded.");
     }
 
     private Param createParam(Request req) {
         req.raw().setAttribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("./target"));
         return new Param(retrieveSupportedLang(req), retrieveSourceCode(req));
-    }
-
-    private ModelAndView setMessage(ModelAndView modelAndView, String message) {
-        ((Map<String, Object>) modelAndView.getModel()).put("message", message);
-        return modelAndView;
     }
 
     private UploadFile retrieveSourceCode(Request req) {
@@ -108,7 +108,16 @@ public class StartApp {
     private ModelAndView uploadPageView() {
         Map<String, Object> model = Maps.newHashMap();
         model.put("supportedLang", SupportedLang.values());
-        return new ModelAndView(model, "templates/upload.vm");
+        return new ModelAndView(model, "templates/index.vm");
+    }
+
+    private ModelAndView setMessage(ModelAndView modelAndView, String message) {
+        appendToModel(modelAndView, "message", message);
+        return modelAndView;
+    }
+
+    private void appendToModel(ModelAndView modelAndView, String modelKey, Object modelValue) {
+        ((Map<String, Object>) modelAndView.getModel()).put(modelKey, modelValue);
     }
 
 

@@ -1,11 +1,11 @@
 package pl.edu.uj.ii.webapp.execute;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import pl.edu.uj.ii.model.CarId;
+import pl.edu.uj.ii.DataConverter;
 import pl.edu.uj.ii.model.CarMove;
-import pl.edu.uj.ii.model.Direction;
 import pl.edu.uj.ii.webapp.execute.test.TestCase;
 
 import javax.tools.JavaCompiler;
@@ -18,10 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static pl.edu.uj.ii.webapp.AppConfig.CONFIG;
 
@@ -57,53 +54,33 @@ public class JavaTask implements Task, Compilable {
     }
 
     @Override
-    public List<CarMove> resolveTestCases(TestCase testCase) {
-        String output = resolveTestCases(testCase.getFile());
-        List<CarMove> carMoves = parseOutput(output);
-        if (carMoves.isEmpty()) {
-            throw new IllegalArgumentException("Cannot parse response: " + output);
+    public List<List<CarMove>> resolveTestCases(TestCase testCase) {
+        List<String> lines = resolveTestCases(testCase.getFile());
+        try {
+            return DataConverter.parseOutputLines(lines);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Cannot parse output " + lines, e);
         }
-        return carMoves;
     }
 
-    public String resolveTestCases(File inputFile) {
+    public List<String> resolveTestCases(File inputFile) {
         ProcessBuilder processBuilder = new ProcessBuilder(CONFIG.getJava8Home() + "/bin/java", compiledFilePath);
         processBuilder.redirectInput(inputFile);
         processBuilder.redirectErrorStream(true);
         processBuilder.directory(inputFile.getParentFile().getParentFile());
-        StringBuilder outputBuilder = new StringBuilder();
+        List<String> lines = Lists.newLinkedList();
         try {
             Process start = processBuilder.start();
             try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(start.getInputStream()));) {
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
-                    outputBuilder.append(line).append('\n');
+                    lines.add(line);
                 }
             }
         } catch (IOException e) {
             LOGGER.error("Cannot execute process.", e);
         }
-        return outputBuilder.toString();
-    }
-
-    public List<CarMove> parseOutput(String output) {
-        return Arrays.asList(output.split("\\n"))
-                .stream()
-                .map(step -> parseStep(step))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-    }
-
-    private CarMove parseStep(String step) {
-        String[] args = step.split(" ");
-        if (args.length != 3) {
-            return null;
-        }
-        return new CarMove(
-                CarId.valueOf(args[0]),
-                Direction.convert(args[1]),
-                Byte.valueOf(args[2])
-        );
+        return lines;
     }
 
     private String generateNewPackage() {

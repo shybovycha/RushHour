@@ -18,7 +18,7 @@ public class PythonTask implements Compilable, Task {
     }
 
     @Override
-    public List<CarMove> resolveTestCases(TestCase testCase) {
+    public List<List<CarMove>> resolveTestCases(TestCase testCase) {
         return Collections.emptyList();
     }
 }
