@@ -15,6 +15,15 @@ public enum Direction {
         this.action = action;
     }
 
+    public static Direction convert(String shotcut) {
+        for (Direction direction : values()) {
+            if (direction.getAction().equals(shotcut)) {
+                return direction;
+            }
+        }
+        return Direction.valueOf(shotcut);
+    }
+
     public String getAction() {
         return action;
     }

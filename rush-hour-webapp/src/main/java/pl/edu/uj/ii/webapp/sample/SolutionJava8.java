@@ -14,7 +14,7 @@ public class SolutionJava8 {
                 scanner.nextLine();
             }
         }
-        Arrays.asList("c D 1", "n L 2", "m D 2", "x P 4")
+        Arrays.asList("C D 1", "N L 2", "M D 2", "X R 4")
                 .stream()
                 .forEach(System.out::println);
     }

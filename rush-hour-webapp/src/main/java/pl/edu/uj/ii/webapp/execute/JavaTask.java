@@ -70,7 +70,7 @@ public class JavaTask implements Task, Compilable {
         ProcessBuilder processBuilder = new ProcessBuilder(CONFIG.getJava8Home() + "/bin/java", compiledFilePath);
         processBuilder.redirectInput(inputFile);
         processBuilder.redirectErrorStream(true);
-        processBuilder.directory(inputFile.getParentFile());
+        processBuilder.directory(inputFile.getParentFile().getParentFile());
         StringBuilder outputBuilder = new StringBuilder();
         try {
             Process start = processBuilder.start();
@@ -101,7 +101,7 @@ public class JavaTask implements Task, Compilable {
         }
         return new CarMove(
                 CarId.valueOf(args[0]),
-                Direction.valueOf(args[1]),
+                Direction.convert(args[1]),
                 Byte.valueOf(args[2])
         );
     }
