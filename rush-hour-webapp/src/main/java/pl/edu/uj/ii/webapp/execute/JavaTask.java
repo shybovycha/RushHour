@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import pl.edu.uj.ii.model.CarId;
 import pl.edu.uj.ii.model.CarMove;
 import pl.edu.uj.ii.model.Direction;
-import pl.edu.uj.ii.webapp.AppConfig;
 import pl.edu.uj.ii.webapp.execute.test.TestCase;
 
 import javax.tools.JavaCompiler;
@@ -59,11 +58,16 @@ public class JavaTask implements Task, Compilable {
 
     @Override
     public List<CarMove> resolveTestCases(TestCase testCase) {
-        return parseOutput(resolveTestCases(testCase.getFile()));
+        String output = resolveTestCases(testCase.getFile());
+        List<CarMove> carMoves = parseOutput(output);
+        if (carMoves.isEmpty()) {
+            throw new IllegalArgumentException("Cannot parse response: " + output);
+        }
+        return carMoves;
     }
 
     public String resolveTestCases(File inputFile) {
-        ProcessBuilder processBuilder = new ProcessBuilder(AppConfig.CONFIG.getJava8Home() + "/bin/java", compiledFilePath);
+        ProcessBuilder processBuilder = new ProcessBuilder(CONFIG.getJava8Home() + "/bin/java", compiledFilePath);
         processBuilder.redirectInput(inputFile);
         processBuilder.redirectErrorStream(true);
         processBuilder.directory(inputFile.getParentFile());

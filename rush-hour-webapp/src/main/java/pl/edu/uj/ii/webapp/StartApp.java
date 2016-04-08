@@ -59,8 +59,12 @@ public class StartApp {
     private ModelAndView processNewSolution(Request req) {
         Param param = createParam(req);
         LOGGER.debug("Request param: " + param);
-        rushHourExecutor.resolveAllTestCases(param);
-        return tweakSubmit(uploadPageView());
+        try {
+            rushHourExecutor.resolveAllTestCases(param);
+        } catch (Exception e) {
+            return setMessage(uploadPageView(), "Cannot execute all testCases:\n" + e.getMessage());
+        }
+        return setMessage(uploadPageView(), "File uploaded.");
     }
 
     private Param createParam(Request req) {
@@ -68,8 +72,8 @@ public class StartApp {
         return new Param(retrieveSupportedLang(req), retrieveSourceCode(req));
     }
 
-    private ModelAndView tweakSubmit(ModelAndView modelAndView) {
-        ((Map<String, Object>) modelAndView.getModel()).put("message", "File uploaded.");
+    private ModelAndView setMessage(ModelAndView modelAndView, String message) {
+        ((Map<String, Object>) modelAndView.getModel()).put("message", message);
         return modelAndView;
     }
 

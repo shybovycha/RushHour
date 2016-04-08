@@ -54,4 +54,8 @@ public class AppConfig {
         return appProperties.getProperty("compiled.file.dir.python.3");
     }
 
+    public String getTestCasesDir() {
+        return appProperties.getProperty("test.cases.dir");
+    }
+
 }

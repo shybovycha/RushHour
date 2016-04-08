@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
+import static pl.edu.uj.ii.webapp.AppConfig.CONFIG;
 
 /**
  * Created by gauee on 4/7/16.
@@ -28,7 +29,8 @@ public class RushHourExecutor {
     public List<TestResult> resolveAllTestCases(final Param param) {
         try {
             Task task = taskFactory.resolveTask(param);
-            return Files.list(Paths.get(getClass().getClassLoader().getResource("testCases").toURI())).filter(f -> f.endsWith(".in"))
+            return Files.list(Paths.get(getClass().getClassLoader().getResource(CONFIG.getTestCasesDir()).toURI()))
+                    .filter(f -> f.toFile().getName().endsWith(".in"))
                     .map(path -> {
                         File file = path.toFile();
                         return new TestCase(file.getName(), file);
