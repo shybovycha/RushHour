@@ -44,8 +44,6 @@ public class JavaTask implements Task, Compilable {
         String sourceCode = uploadFile.getData().replaceFirst("package .+?;", "package " + filePackage + ";");
         LOGGER.debug("Source code to compile:\n" + StringUtils.replaceChars(sourceCode, '\n', ' '));
         Files.write(file, sourceCode.getBytes(StandardCharsets.UTF_8));
-
-//        ProcessBuilder processBuilder = new ProcessBuilder(getCompileCommand(), packageDir + File.separator + className + ".java");
         ProcessBuilder processBuilder = new ProcessBuilder(getCompileCommand(), file.toFile().getAbsolutePath());
         processBuilder.redirectErrorStream(true);
         processBuilder.directory(file.getParent().getParent().getParent().toFile());
