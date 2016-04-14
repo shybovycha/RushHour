@@ -51,8 +51,8 @@ public class StartApp {
 
     private Map<SupportedLang, Compilable> initLanguageCompilers() {
         Map<SupportedLang, Compilable> languageCompilers = Maps.newHashMap();
-        languageCompilers.put(SupportedLang.JAVA_7, new JavaTask(CONFIG.getCompiledFileDirForJava7()));
-        languageCompilers.put(SupportedLang.JAVA_8, new JavaTask(CONFIG.getCompiledFileDirForJava8()));
+        languageCompilers.put(SupportedLang.JAVA_7, new JavaTask(CONFIG.getCompiledFileDirForJava7(), CONFIG.getJava7Home()));
+        languageCompilers.put(SupportedLang.JAVA_8, new JavaTask(CONFIG.getCompiledFileDirForJava8(), CONFIG.getJava8Home()));
         languageCompilers.put(SupportedLang.PYTHON_2, new PythonTask());
         languageCompilers.put(SupportedLang.PYTHON_3, new PythonTask());
         return languageCompilers;

@@ -15,9 +15,8 @@ public class JavaTaskTest {
 
     @Test
     public void compilesProvidedSourceCode() throws IOException, ClassNotFoundException {
-        new JavaTask(CONFIG.getCompiledFileDirForJava8()).compile(new UploadFile("Reader.java", javaClassSourceCode));
+        new JavaTask(CONFIG.getCompiledFileDirForJava8(), CONFIG.getJava8Home()).compile(new UploadFile("Reader.java", javaClassSourceCode));
     }
-
 
 //    static class Reader {
 //        public static void main(String[] args) throws InterruptedException {
