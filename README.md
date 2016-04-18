@@ -7,18 +7,21 @@ Zadanie polega na podaniu listy ruchów poszczególnych samochodów umożliwiaj�
 Pod uwagę będzie brana również pojedyncza liczba przesunięć każdego samochodu, tj. ruch samochodu w prawo o x pól będzie liczony jako x.
 
 # Input
+**Dane do zadania są przekazywane przez standardowe wejście.**
 Algorytm jest uruchamiany kilkukrotnie z przykładami testowymi o różnej trudności.
 Pierwsza linia zawiera liczbę przypadków testowych
 Każdy przypadek testowy rozpoczyna się od liczby n samochodów na planszy.
-Kolejne n lini zawierają opis każdego samochodu w postaci:
-[id] [start point] [direction] [length]
-[id] - identyfikatorem samochodu jako duża litera
-[start point] - punkt znajdujący się najblizej w pionie i poziomie do punktu (0,0)
-[direction] - polozenie samochodu wartosci V albo H
-[length] - dlugość samochodu
+Kolejne n lini zawierają opis każdego samochodu w postaci: _[id] [start point] [direction] [length]_
+
+- [id] - identyfikatorem samochodu jako duża litera
+- [start point] - punkt znajdujący się najblizej w pionie i poziomie do punktu (0,0)
+- [direction] - polozenie samochodu wartosci V albo H
+- [length] - dlugość samochodu
 
 # Output
-Dla każdego przypadku testowego należy wyświetlić w jednej lini liczbę n kroków oraz n linii ruchów samochodów z planszy
+Dla każdego przypadku testowego należy wyświetlić w jednej lini liczbę n kroków oraz n linii ruchów samochodów po planszy.
+**Liczba kroków oraz kroki powinny zostać przekazana na standardowe wyjście.** 
+
 
 # Limits
 TBD
@@ -104,3 +107,10 @@ Samochody w kolejnych ruchach znajdowały się na odpowiednich pozycjach.
 - C# (Win10x64, min .Net 4.0 x86)
 - Java (jdk1.7, jdk1.8)
 - Python (python2.7, python3.4)
+
+# Questions
+W przypadku pytań, niejasności czy bugów proszę sprawdzić [FAQ][1] lub w przypadku braku odpowiedzi stworzyć [issue][2] lub kontaktować się mailowo. 
+FAQ będzie stopniowo rozwijane na podstawie zadawanych pytań. **Możliwe są pewne zmiany w zakresie problemu zadania ze względu na zgłoszone uwagi**
+
+[1]:https://github.com/gauee/RushHour/wiki
+[2]:https://github.com/gauee/RushHour/issues
