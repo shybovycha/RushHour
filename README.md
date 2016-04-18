@@ -1,9 +1,8 @@
 # Problem
-Plansza o wymiarach 6 x 6 zawiera N samochodów. Samochody na planszyu są ustawione w pionie albo w poziomie, oraz zajmują dwa lub trzy pola na planszy.
+Plansza o wymiarach 6 x 6 zawiera N samochodów. Samochody na planszy są ustawione w pionie albo w poziomie, oraz zajmują dwa lub trzy pola na planszy.
 Adres pola planszy składa się z punktu (x,y), gdzie x i y są z przedziału [0,5] oraz lewy dolny róg planszy ma współrzędne (0,0) natomiast prawy górny róg współrzędne (5,5).
 Samochody mogą się poruszać tylko do przodu lub w tyłu zgodnie ze swoim położeniem. Samochody nie mogą wyjeżdzać poza granice planszy lub najeżdzać na siebie.
 Samochód oznaczony identyfikatorem X, który musi osiągnąć pole o adresie (5,3) jednym swoim końcem.
-Zadanie polega na podaniu listy ruchów poszczególnych samochodów umożliwiającej dotarcie do pola o adresie (5,3) i opuszczenia przez samochódu z identyfikatorem X planszy.
 Pod uwagę będzie brana również pojedyncza liczba przesunięć każdego samochodu, tj. ruch samochodu w prawo o x pól będzie liczony jako x.
 
 # Input
