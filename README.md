@@ -32,7 +32,7 @@ TBD
     3
     X 0 3 H 2
     A 4 1 H 2
-    C 4 2 V 3
+    C 4 3 V 3
 ### Output
     3
     A L 2
