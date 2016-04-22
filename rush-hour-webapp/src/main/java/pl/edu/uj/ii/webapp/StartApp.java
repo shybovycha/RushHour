@@ -61,7 +61,9 @@ public class StartApp {
     private ModelAndView processNewSolution(Request req) {
         Param param = createParam(req);
         ModelAndView modelAndView = uploadPageView();
+
         LOGGER.debug("Request param: " + param);
+
         try {
             List<TestResult> testResults = rushHourExecutor.runAllTestCases(param);
             appendToModel(modelAndView, "testResults", testResults);
@@ -69,6 +71,7 @@ public class StartApp {
             LOGGER.error("Cannot retrieve output", e);
             return setMessage(modelAndView, "Cannot execute all testCases:\n" + e.getMessage());
         }
+
         return setMessage(modelAndView, "File uploaded.");
     }
 

@@ -15,7 +15,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.*;
 
 import static pl.edu.uj.ii.webapp.AppConfig.CONFIG;
 
@@ -24,6 +26,8 @@ import static pl.edu.uj.ii.webapp.AppConfig.CONFIG;
  */
 public abstract class Task {
     protected static final Logger LOGGER = Logger.getLogger(JavaTask.class);
+    protected static final Duration RUN_TIMEOUT = Duration.ofSeconds(30);
+
     protected String baseFileName;
     protected Path sourceFile;
     protected String sourceCode;
@@ -86,12 +90,34 @@ public abstract class Task {
     }
 
     public List<List<CarMove>> getOutputFor(TestCase testCase) {
-        List<String> lines = this.runWithInput(testCase.getFile());
+        List<String> output = Lists.newArrayList();
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        final Future<List<String>> future = executor.submit(new Callable<List<String>>() {
+            @Override
+            public List<String> call() throws Exception {
+                return Task.this.runWithInput(testCase.getFile());
+            }
+        });
 
         try {
-            return DataConverter.parseOutputLines(lines);
+            output = future.get(RUN_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            future.cancel(true);
+            LOGGER.error("Running program has timed out");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } finally {
+            executor.shutdownNow();
+        }
+
+        try {
+            return DataConverter.parseOutputLines(output);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Cannot parse output " + lines, e);
+            throw new IllegalArgumentException("Cannot parse output " + output, e);
         }
     }
 }

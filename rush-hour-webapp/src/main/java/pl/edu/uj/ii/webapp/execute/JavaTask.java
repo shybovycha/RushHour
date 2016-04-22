@@ -28,22 +28,11 @@ public class JavaTask extends CompilableTask {
     public Task compile() throws IOException, ClassNotFoundException {
         String className = this.baseFileName.split("\\.")[0];
 
-//        String packageDir = generateNewPackage();
-//
-//        Path root = Paths.get(CONFIG.getUploadedFileDir());
-//        Path file = Paths.get(root.toString(), packageDir, className + ".java");
-//
-//        Files.createDirectories(file.getParent());
-//
         String filePackage = this.packageDir.replaceAll("\\" + File.separator, ".");
 
         // patch package name in the source code
         String newCode = this.sourceCode.replaceFirst("package\\s+.*?;", String.format("package %s;", filePackage));
         this.updateSourceCode(newCode);
-
-//        LOGGER.debug("Source code to compile:\n" + StringUtils.replaceChars(sourceCode, '\n', ' '));
-//
-//        Files.write(file, sourceCode.getBytes(StandardCharsets.UTF_8));
 
         ProcessBuilder processBuilder = new ProcessBuilder(this.getCompileCommand(), this.getSourceFilePath());
         processBuilder.redirectErrorStream(true);
